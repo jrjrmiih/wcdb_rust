@@ -29,7 +29,12 @@
 namespace WCDB {
 
 CipherConfig::CipherConfig(const UnsafeData& cipher, int pageSize, int cipherVersion)
-: Config(), m_key(cipher), m_pageSize(pageSize), m_cipherVersion(cipherVersion)
+: Config(), m_key(cipher), m_pageSize(pageSize), m_cipherVersion(cipherVersion), m_rc_key_type(0)
+{
+}
+
+CipherConfig::CipherConfig(const UnsafeData& cipher, int pageSize, int cipherVersion, int keyType)
+: Config(), m_key(cipher), m_pageSize(pageSize), m_cipherVersion(cipherVersion), m_rc_key_type(keyType)
 {
 }
 
@@ -41,8 +46,10 @@ bool CipherConfig::invoke(InnerHandle* handle)
     {
         SharedLockGuard lockGuard(m_lock);
         if (!m_rawKey.empty()) {
+            m_rawKey.m_rc_key_type = m_rc_key_type;
             ret = handle->setCipherKey(m_rawKey);
         } else {
+            m_key.m_rc_key_type = m_rc_key_type;
             ret = handle->setCipherKey(m_key);
         }
     }
@@ -52,7 +59,10 @@ bool CipherConfig::invoke(InnerHandle* handle)
         StatementPragma().pragma(Pragma::cipherCompatibility()).to(m_cipherVersion));
     }
     if (ret) {
-        ret = handle->setCipherPageSize(m_pageSize);
+        bool is_rc = (10 == m_rc_key_type || 11 == m_rc_key_type);
+        if (!is_rc) {
+            ret = handle->setCipherPageSize(m_pageSize);
+        }
     }
     return ret;
 }
@@ -69,7 +79,10 @@ void CipherConfig::trySaveRawKey(InnerHandle* handle)
     if (!m_rawKey.empty()) {
         return;
     }
-    m_rawKey = handle->getRawCipherKey();
+    bool is_rc = (10 == m_rc_key_type || 11 == m_rc_key_type);
+    if (!is_rc) {
+        m_rawKey = handle->getRawCipherKey();
+    }
     if (!m_rawKey.empty()) {
         m_key = Data();
     }

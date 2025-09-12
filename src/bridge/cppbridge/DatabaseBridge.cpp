@@ -144,6 +144,24 @@ void WCDBDatabaseConfigCipher(CPPDatabase database,
     }
 }
 
+void WCDBDatabaseConfigCipherForRC(CPPDatabase database,
+                                   const unsigned char* _Nullable cipherKey,
+                                   int keyLength,
+                                   int pageSize,
+                                   int cipherVersion,
+                                   int keyType) {
+    WCDBGetObjectOrReturn(database, WCDB::InnerDatabase, cppDatabase);
+    if (cipherKey) {
+        cppDatabase->setConfig(
+                WCDB::CipherConfigName,
+                std::static_pointer_cast<WCDB::Config>(std::make_shared<WCDB::CipherConfig>(
+                        WCDB::UnsafeData::immutable(cipherKey, (size_t) keyLength), pageSize, cipherVersion, keyType)),
+                WCDB::Configs::Priority::Highest);
+    } else {
+        cppDatabase->removeConfig(WCDB::CipherConfigName);
+    }
+}
+
 void WCDBDatabaseConfig(CPPDatabase database,
                         const char* _Nullable name,
                         WCDBConfigCallback _Nonnull invocation,

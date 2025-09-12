@@ -81,6 +81,10 @@ protected:
     unsigned char *m_buffer;
     size_t m_size;
 
+#pragma mark - RongCloud
+public:
+    int m_rc_key_type;
+
 #pragma mark - SharedBuffer
 protected:
     struct SharedData {

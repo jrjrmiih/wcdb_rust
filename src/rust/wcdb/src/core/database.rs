@@ -136,6 +136,15 @@ extern "C" {
         version: c_int,
     );
 
+    fn WCDBRustDatabase_configCipherForRC(
+        cpp_obj: *mut c_void,
+        key: *const u8,
+        key_len: usize,
+        page_size: c_int,
+        version: c_int,
+        key_type: c_int,
+    );
+
     fn WCDBRustCore_setDefaultCipherConfig(version: c_int);
 
     fn WCDBRustDatabase_close(
@@ -937,6 +946,31 @@ impl Database {
                 key_len,
                 page_size,
                 version as i32,
+            );
+        }
+    }
+
+    pub fn set_cipher_rc_key(
+        &self,
+        key: &Vec<u8>,
+        page_size: Option<i32>,
+        version: Option<CipherVersion>,
+    ) {
+        let key_ptr = key.as_ptr();
+        let key_len = key.len();
+        let page_size = page_size.unwrap_or(4096);
+        let version = version.unwrap_or(CipherVersion::DefaultVersion);
+        // rc_key        10
+        // rc_rekey      11
+        let key_type = 10;
+        unsafe {
+            WCDBRustDatabase_configCipherForRC(
+                self.get_cpp_obj(),
+                key_ptr,
+                key_len,
+                page_size,
+                version as i32,
+                key_type,
             );
         }
     }

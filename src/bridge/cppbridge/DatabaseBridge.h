@@ -60,6 +60,13 @@ void WCDBDatabaseConfigCipher(CPPDatabase database,
                               int pageSize,
                               int cipherVersion);
 
+void WCDBDatabaseConfigCipherForRC(CPPDatabase database,
+                              const unsigned char* _Nullable cipherKey,
+                              int keyLength,
+                              int pageSize,
+                              int cipherVersion,
+                              int keyType);
+
 typedef bool (*WCDBConfigCallback)(void* _Nonnull context, CPPHandle handle);
 void WCDBDatabaseConfig(CPPDatabase database,
                         const char* _Nullable name,

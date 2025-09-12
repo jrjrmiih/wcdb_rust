@@ -34,6 +34,7 @@ namespace WCDB {
 class CipherConfig final : public Config {
 public:
     CipherConfig(const UnsafeData &cipher, int pageSize, int cipherVersion);
+    CipherConfig(const UnsafeData &cipher, int pageSize, int cipherVersion, int keyType);
     ~CipherConfig() override;
 
     bool invoke(InnerHandle *handle) override final;
@@ -42,6 +43,9 @@ public:
 protected:
     Data m_key;
     Data m_rawKey;
+    // rc_key        10
+    // rc_rekey      11
+    int m_rc_key_type;
     mutable SharedLock m_lock;
     const int m_pageSize;
     const int m_cipherVersion = 4;

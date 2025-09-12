@@ -31,6 +31,7 @@ set(WCDB_SRC_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 file(GLOB_RECURSE WCDB_COMMON_SRC
     ${WCDB_SRC_DIR}/common/*.c
+    ${WCDB_SRC_DIR}/common/core/sqlite/sqlite3_rong.c
     ${WCDB_SRC_DIR}/common/*.cpp
     ${WCDB_SRC_DIR}/common/*.h
     ${WCDB_SRC_DIR}/common/*.hpp

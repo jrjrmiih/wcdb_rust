@@ -156,6 +156,16 @@ void WCDBRustDatabaseClassMethod(configCipher,
     WCDBRustBridgeStruct(CPPDatabase, self);
     WCDBDatabaseConfigCipher(selfStruct, cipherKey, len, pageSize, cipherVersion);
 }
+void WCDBRustDatabaseClassMethod(configCipherForRC,
+                                 void* self,
+                                 uint8_t* cipherKey,
+                                 size_t len,
+                                 int pageSize,
+                                 int cipherVersion,
+                                 int keyType) {
+    WCDBRustBridgeStruct(CPPDatabase, self);
+    WCDBDatabaseConfigCipherForRC(selfStruct, cipherKey, len, pageSize, cipherVersion, keyType);
+}
 
 typedef struct WCDBRustGlobalSetConfigContext {
     RustSetConfigCallback rust_callback;

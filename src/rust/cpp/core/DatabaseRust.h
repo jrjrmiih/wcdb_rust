@@ -65,6 +65,13 @@ void WCDBRustDatabaseClassMethod(configCipher,
                                  size_t len,
                                  int pageSize,
                                  int cipherVersion);
+void WCDBRustDatabaseClassMethod(configCipherForRC,
+                                 void* self,
+                                 uint8_t* cipherKey,
+                                 size_t len,
+                                 int pageSize,
+                                 int cipherVersion,
+                                 int keyType);
 
 typedef bool (*RustSetConfigCallback)(void* cpp_handle);
 

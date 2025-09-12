@@ -29,6 +29,7 @@
 #include "Path.hpp"
 #include "SQLite.h"
 #include "StringView.hpp"
+#include "sqlite3_rong.h"
 
 namespace WCDB {
 
@@ -1002,6 +1003,12 @@ size_t AbstractHandle::getCipherPageSize()
 bool AbstractHandle::setCipherKey(const UnsafeData &data)
 {
     WCTAssert(isOpened());
+    if (10 == data.m_rc_key_type) {
+        return APIExit(rc_sqlite3_key_v2(m_handle, "main", data.buffer(), (int) data.size()));
+    }
+    if (11 == data.m_rc_key_type) {
+        return APIExit(rc_sqlite3_rekey_v2(m_handle, "main", data.buffer(), (int) data.size()));
+    }
     return APIExit(sqlite3_key(m_handle, data.buffer(), (int) data.size()));
 }
 
