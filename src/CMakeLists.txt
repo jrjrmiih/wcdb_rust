@@ -365,8 +365,10 @@ else ()
     # xcode 14.0.1 must manually set -std=c++14 since set(CMAKE_CXX_STANDARD 14) has no effect when compiler iOS-Simulator on M1
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMM_FLAGS_} -std=c++14")
 
-    # enable lto and no-plt (only for non-Android platforms)
-    if (NOT ANDROID)
+    # enable lto and no-plt only where the static archive stays as Mach-O/ELF objects.
+    # Apple clang emits LLVM bitcode wrapper objects with -flto, which xcodebuild
+    # cannot inspect when creating an XCFramework from the Cargo-produced .a.
+    if (NOT ANDROID AND NOT APPLE)
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto -fno-plt")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -fno-plt")
     endif()
