@@ -1,9 +1,9 @@
 [submodule "sqlcipher"]
 	path = sqlcipher
-	url = https://github.com/Tencent/sqlcipher.git
+	url = https://gitlab2.rongcloud.net/rust/sqlcipher.git
 [submodule "openssl"]
 	path = openssl
-	url = https://github.com/openssl/openssl.git
+	url = https://gitlab2.rongcloud.net/rust/openssl.git
 [submodule "zstd"]
 	path = zstd
-	url = https://github.com/facebook/zstd.git
+	url = https://gitlab2.rongcloud.net/rust/zstd.git
