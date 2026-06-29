@@ -5,7 +5,7 @@ use crate::utils::ToCString;
 use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::statement::{Statement, StatementTrait};
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_int, c_void};
 
 extern "C" {
@@ -30,7 +30,7 @@ extern "C" {
     fn WCDBRustStatementCreateVirtualTable_configArguments(
         cpp_obj: *mut c_void,
         argument: *const *const c_char,
-        argument_len: c_size_t,
+        argument_len: size_t,
     ) -> *mut c_void;
 }
 

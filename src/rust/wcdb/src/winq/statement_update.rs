@@ -12,7 +12,7 @@ use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::ordering_term::OrderingTerm;
 use crate::winq::statement::{Statement, StatementTrait};
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_double, c_int, c_longlong, c_void};
 use std::fmt::Debug;
 use std::ptr::{null, null_mut};
@@ -40,7 +40,7 @@ extern "C" {
         columns_type: c_int,
         columns_void_vec: *const *mut c_void,
         columns_string_vec: *const *const c_char,
-        columns_vec_len: c_size_t,
+        columns_vec_len: size_t,
     );
 
     fn WCDBRustStatementUpdate_configCondition(cpp_obj: *mut c_void, condition: *mut c_void);
@@ -48,7 +48,7 @@ extern "C" {
     fn WCDBRustStatementUpdate_configOrders(
         cpp_obj: *mut c_void,
         orders: *const *mut c_void,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
     fn WCDBRustStatementUpdate_configLimitCount(
         cpp_obj: *mut c_void,
@@ -79,7 +79,7 @@ extern "C" {
         cpp_type: c_int,
         columns: *const *mut c_void,
         column_names: *const *const c_char,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
 
     fn WCDBRustStatementUpdate_configLimitRange(

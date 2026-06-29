@@ -7,7 +7,7 @@ use crate::winq::expression::Expression;
 use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::statement::{Statement, StatementTrait};
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_int, c_void};
 
 extern "C" {
@@ -29,7 +29,7 @@ extern "C" {
         columns_type: c_int,
         columns_void_vec: *const *mut c_void,
         columns_string_vec: *const *const c_char,
-        columns_vec_len: c_size_t,
+        columns_vec_len: size_t,
     );
 
     fn WCDBRustStatementCreateIndex_configSchema(

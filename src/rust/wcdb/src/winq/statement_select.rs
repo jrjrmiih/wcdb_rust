@@ -10,7 +10,7 @@ use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::ordering_term::OrderingTerm;
 use crate::winq::statement::{Statement, StatementTrait};
 use crate::winq::table_or_subquery_convertible_trait::TableOrSubqueryConvertibleTrait;
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_double, c_int, c_longlong, c_void};
 use std::fmt::Debug;
 
@@ -23,7 +23,7 @@ extern "C" {
         column_vec: *const c_longlong,
         unused_vec: *const c_double,
         column_name_vec: *const *const c_char,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
 
     fn WCDBRustStatementSelect_configTableOrSubqueries(
@@ -32,7 +32,7 @@ extern "C" {
         long_vec: *const c_longlong,
         unused_vec: *const c_double,
         table_name_vec: *const *const c_char,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
 
     fn WCDBRustStatementSelect_configCondition(cpp_obj: *mut c_void, condition: *mut c_void);
@@ -40,7 +40,7 @@ extern "C" {
     fn WCDBRustStatementSelect_configOrders(
         cpp_obj: *mut c_void,
         order_vec: *const c_longlong,
-        orders_length: c_size_t,
+        orders_length: size_t,
     );
 
     fn WCDBRustStatementSelect_configGroups(
@@ -49,7 +49,7 @@ extern "C" {
         exps_vec: *const c_longlong,
         unused_vec: *const c_double,
         colum_name_vec: *const *const c_char,
-        length: c_size_t,
+        length: size_t,
     );
 
     fn WCDBRustStatementSelect_configUnion(cpp_obj: *mut c_void);

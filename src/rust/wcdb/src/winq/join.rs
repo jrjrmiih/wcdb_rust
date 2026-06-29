@@ -7,7 +7,7 @@ use crate::winq::expression::Expression;
 use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::table_or_subquery_convertible_trait::TableOrSubqueryConvertibleTrait;
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_int, c_void};
 
 extern "C" {
@@ -101,7 +101,7 @@ extern "C" {
         cpp_type: c_int,
         columns: *const *mut c_void,
         column_names: *const *const c_char,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
 }
 
