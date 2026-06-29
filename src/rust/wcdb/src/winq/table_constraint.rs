@@ -4,7 +4,7 @@ use crate::base::param::enum_string_indexed_column::StringIndexedColumn;
 use crate::utils::ToCString;
 use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_int, c_void};
 
 extern "C" {
@@ -19,7 +19,7 @@ extern "C" {
         columns_type: c_int,
         column_vec: *const *mut c_void,
         column_name_vec: *const *const c_char,
-        column_vec_len: c_size_t,
+        column_vec_len: size_t,
     );
 }
 

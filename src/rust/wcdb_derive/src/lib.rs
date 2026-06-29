@@ -1,5 +1,3 @@
-#![feature(proc_macro_quote)]
-
 mod compiler;
 mod macros;
 

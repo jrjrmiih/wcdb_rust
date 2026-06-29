@@ -5,7 +5,7 @@ use crate::winq::identifier::{CPPType, Identifier, IdentifierTrait};
 use crate::winq::identifier_convertible::IdentifierConvertibleTrait;
 use crate::winq::ordering_term::OrderingTerm;
 use crate::winq::statement::{Statement, StatementTrait};
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_int, c_void, CString};
 use std::fmt::Debug;
 
@@ -24,7 +24,7 @@ extern "C" {
     fn WCDBRustStatementDelete_configOrders(
         cpp_obj: *mut c_void,
         orders: *const *mut c_void,
-        vec_len: c_size_t,
+        vec_len: size_t,
     );
 
     fn WCDBRustStatementDelete_configLimitCount(

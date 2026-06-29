@@ -6,7 +6,7 @@ use crate::orm::field::Field;
 use crate::utils::{ToCString, ToCow};
 use crate::winq::column_type::ColumnType;
 use crate::winq::statement::StatementTrait;
-use core::ffi::c_size_t;
+use libc::size_t;
 use std::ffi::{c_char, c_double, c_int, c_void, CString};
 use std::slice;
 use std::sync::atomic::{AtomicI32, Ordering};
@@ -20,29 +20,25 @@ extern "C" {
     fn WCDBRustHandleStatement_reset(cpp_obj: *mut c_void);
     fn WCDBRustHandleStatement_finalize(cpp_obj: *mut c_void);
     fn WCDBRustHandleStatement_isDone(cpp_obj: *mut c_void) -> bool;
-    fn WCDBRustHandleStatement_bindInteger(cpp_obj: *mut c_void, value: i64, index: c_size_t);
-    fn WCDBRustHandleStatement_bindDouble(cpp_obj: *mut c_void, value: c_double, index: c_size_t);
-    fn WCDBRustHandleStatement_bindText(
-        cpp_obj: *mut c_void,
-        value: *const c_char,
-        index: c_size_t,
-    );
+    fn WCDBRustHandleStatement_bindInteger(cpp_obj: *mut c_void, value: i64, index: size_t);
+    fn WCDBRustHandleStatement_bindDouble(cpp_obj: *mut c_void, value: c_double, index: size_t);
+    fn WCDBRustHandleStatement_bindText(cpp_obj: *mut c_void, value: *const c_char, index: size_t);
     fn WCDBRustHandleStatement_bindBLOB(
         cpp_obj: *mut c_void,
         value: *const u8,
-        value_len: c_size_t,
-        index: c_size_t,
+        value_len: size_t,
+        index: size_t,
     );
-    fn WCDBRustHandleStatement_bindNull(cpp_obj: *mut c_void, index: c_size_t);
-    fn WCDBRustHandleStatement_getInteger(cpp_obj: *mut c_void, index: c_size_t) -> i64;
-    fn WCDBRustHandleStatement_getDouble(cpp_obj: *mut c_void, index: c_size_t) -> c_double;
-    fn WCDBRustHandleStatement_getText(cpp_obj: *mut c_void, index: c_size_t) -> *const c_char;
+    fn WCDBRustHandleStatement_bindNull(cpp_obj: *mut c_void, index: size_t);
+    fn WCDBRustHandleStatement_getInteger(cpp_obj: *mut c_void, index: size_t) -> i64;
+    fn WCDBRustHandleStatement_getDouble(cpp_obj: *mut c_void, index: size_t) -> c_double;
+    fn WCDBRustHandleStatement_getText(cpp_obj: *mut c_void, index: size_t) -> *const c_char;
     fn WCDBRustHandleStatement_getColumnType(cpp_obj: *mut c_void, index: c_int) -> c_int;
     fn WCDBRustHandleStatement_getColumnCount(cpp_obj: *mut c_void) -> c_int;
 
     fn WCDBRustHandleStatement_getBLOB(
         cpp_obj: *mut c_void,
-        index: c_size_t,
+        index: size_t,
         data: *mut *const std::ffi::c_uchar,
         data_size: *mut i64,
     );
