@@ -282,7 +282,7 @@ pub mod database_upgrade_test {
         }
     }
 
-    // 从V1升级到V2，升级内容：
+    // 从 V1 升级到 V2，升级内容：
     //      1.ConversationTable 表增加 channel_type、draft_message、id，字段无默认值
     //      2.id 字段增加自增主键约束
     //      3.给 "target_id", "category_id", "channel_id" 增加索引
@@ -340,7 +340,7 @@ pub mod database_upgrade_test {
         database.close(Some(|| {}));
     }
 
-    // 从V2升级到V3，升级内容：
+    // 从 V2 升级到 V3，升级内容：
     //      1.ConversationTable 表增加 status、extra_column1 字段，且有默认值
     //      2.删除 last_time 字段
     //      3.重命名字段 is_top 为 rename_is_top
@@ -382,8 +382,8 @@ pub mod database_upgrade_test {
         database.close(Some(|| {}));
     }
 
-    // 从V3升级到V4，升级内容：
-    //      1.增加MessageTable表
+    // 从 V3 升级到 V4，升级内容：
+    //      1.增加 MessageTable 表
     //      2.给表增加主键
     //      3.修改表名
     //      4.
@@ -517,7 +517,7 @@ pub mod database_upgrade_test {
 
         database.close(Some(|| {}));
 
-        // 模拟升级崩溃，ConversationTableV1_1 结构体增加了3个字段，删除了2个字段
+        // 模拟升级崩溃，ConversationTableV1_1 结构体增加了 3 个字段，删除了 2 个字段
         let handle = thread::spawn(move || {
             let database = Database::new("./tests/database/custom/upgrade_db.sqlite3", None);
             let result = panic::catch_unwind(AssertUnwindSafe(|| {
@@ -544,10 +544,10 @@ pub mod database_upgrade_test {
         }
         database.close(Some(|| {}));
 
-        // 模拟从6个字段的表降级为3个字段的表
+        // 模拟从 6 个字段的表降级为 3 个字段的表
         // 结论：
-        //  1.其他3个字段任然在表里 数据也在
-        //  2.当给3个字段的结构体代表的表插入数据时，其他字段数据为空
+        //  1.其他 3 个字段任然在表里 数据也在
+        //  2.当给 3 个字段的结构体代表的表插入数据时，其他字段数据为空
         let database = Database::new("./tests/database/custom/upgrade_db.sqlite3", None);
         let statement = StatementDropTable::new();
         statement.drop_table("ConversationTable").if_exist();

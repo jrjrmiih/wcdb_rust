@@ -9,10 +9,10 @@ fn main() {
     let dst = config_cmake(&target);
 
     println!("cargo:rerun-if-changed=cpp");
-    println!("cargo:rustc-link-lib=static=sqlcipher");
-    println!("cargo:rustc-link-lib=static=zstd");
     println!("cargo:rustc-link-lib=z");
     if target.contains("apple") {
+        println!("cargo:rustc-link-lib=static=sqlcipher");
+        println!("cargo:rustc-link-lib=static=zstd");
         println!("cargo:rustc-link-lib=c++");
         println!("cargo:rustc-link-lib=framework=CoreFoundation");
         println!("cargo:rustc-link-lib=framework=Security");
@@ -30,15 +30,24 @@ fn main() {
         let openssl_search_path = openssl_search_path_from_target(&target)
             .expect(&format!("wcdb not support target: {}", target));
         let openssl_path = manifest_dir.join(openssl_search_path);
-        println!("cargo:rustc-link-lib=stdc++");
         println!("cargo:rustc-link-search=native={}", openssl_path.display());
-        println!("cargo:rustc-link-lib=static=crypto");
         println!(
             "cargo:rustc-link-search=native={}/build/wcdb/",
             dst.display()
         );
-        println!("cargo:rustc-link-lib=static=WCDB");
+        // GNU ld 对静态库链接顺序敏感，且 build script 声明的静态库默认只强制
+        // 链进 wcdb 自身的 target，不会强制进入依赖方（examples / 集成测试），
+        // 导致依赖方链接时 WCDBRust_* 与 C++ 符号 undefined。用 whole-archive
+        // 把每个目标文件（含 WCDBRust_* 桥接符号）强制塞进任何链接 wcdb rlib 的
+        // 产物，且不受顺序影响；stdc++（dylib）放最后，解析 WCDB 引入的 C++ 运行时符号。
+        println!("cargo:rustc-link-lib=static:+whole-archive=WCDB");
+        println!("cargo:rustc-link-lib=static:+whole-archive=sqlcipher");
+        println!("cargo:rustc-link-lib=static:+whole-archive=zstd");
+        println!("cargo:rustc-link-lib=static:+whole-archive=crypto");
+        println!("cargo:rustc-link-lib=stdc++");
     } else if target.contains("windows") {
+        println!("cargo:rustc-link-lib=static=sqlcipher");
+        println!("cargo:rustc-link-lib=static=zstd");
         // 根据工具链选择不同的 C++ 标准库
         if target.contains("msvc") {
             // MSVC 工具链
@@ -137,13 +146,22 @@ fn config_cmake(target: &str) -> PathBuf {
         .define("CMAKE_BUILD_TYPE", "Release")
         .define("BUILD_FROM_CARGO", "ON");
 
-    // 体积优化：将 Release 默认的 -O3（速度优先）覆盖为 -Os（体积优先），
-    // 缩小 WCDB/sqlcipher/zstd/openssl 编入最终 .so 的代码段。
-    // 仅改优化级别——NDK/工具链注入的 -g 调试信息保留，C++ 崩溃栈仍可符号反解
+    // 体积优化：将 Release 默认的高优化级别（速度优先）覆盖为体积优先，
+    // 缩小 WCDB/sqlcipher/zstd/openssl 编入最终产物的代码段；
+    // 同时保留调试信息，保证 C++ 崩溃栈仍可符号反解
     //（调试信息在发布期被 strip，不计入出包体积，只进离线符号归档）。
-    // 注意：-Os 是 clang/gcc 标志，MSVC(cl.exe) 不认，故排除 windows-msvc。
     let is_msvc = target.contains("windows") && target.contains("msvc");
-    if !is_msvc {
+    if is_msvc {
+        // MSVC(cl.exe) 不认 -Os/-g，须用对应标志：
+        //   /O1 最小化代码体积（等价 clang/gcc 的 -Os 体积优先优化）；
+        //   /Z7 把 CodeView 调试信息直接嵌入 .obj，随静态库进入最终 PDB，
+        //       保证崩溃栈可反解（不用 /Zi：它生成独立 vcxxx.pdb，
+        //       静态库被二次链接时易丢符号）。
+        cmake
+            .define("CMAKE_CXX_FLAGS_RELEASE", "/O1 /Z7 /DNDEBUG")
+            .define("CMAKE_C_FLAGS_RELEASE", "/O1 /Z7 /DNDEBUG");
+    } else {
+        // clang/gcc：-Os 体积优先；NDK/工具链注入的 -g 调试信息保留。
         cmake
             .define("CMAKE_CXX_FLAGS_RELEASE", "-Os -DNDEBUG")
             .define("CMAKE_C_FLAGS_RELEASE", "-Os -DNDEBUG");

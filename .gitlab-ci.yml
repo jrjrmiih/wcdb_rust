@@ -1,5 +1,5 @@
 
-image: "harbor.rongcloud.net/library/rust/wcdb:0.1.4"
+image: "harbor.rongcloud.net/library/rust/wcdb:0.1.5"
 
 variables:
   CARGO_HOME: ${CI_PROJECT_DIR}/CargoHome

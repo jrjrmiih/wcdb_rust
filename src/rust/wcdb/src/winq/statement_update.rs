@@ -188,7 +188,7 @@ impl StatementUpdate {
         S: Into<StringQualifiedTable<'a>>,
     {
         let value = table_vec.into();
-        let mut c_string_opt = None; // 持有 CString ，避免被提前释放
+        let mut c_string_opt = None; // 持有 CString，避免被提前释放
         let (cpp_type, table, table_name) = match value {
             StringQualifiedTable::String(str) => {
                 let table_name = str.as_str().to_cstring();

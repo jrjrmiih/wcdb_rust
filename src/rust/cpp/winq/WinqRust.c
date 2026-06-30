@@ -23,7 +23,7 @@
 #include "WinqBridge.h"
 
 const char* WCDBRustClassMethod(Winq, getDescription, void* statement) {
-    WCDBWinqGetDescription((CPPObject*)statement);
+    return WCDBWinqGetDescription((CPPObject*)statement);
 }
 
 bool WCDBRustClassMethod(Winq, isWriteStatement, void* statement) {

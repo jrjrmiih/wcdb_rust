@@ -23,7 +23,7 @@ fn camel_to_snake_upper(s: &str) -> String {
                 consecutive_uppercase += 1;
                 j += 1;
             }
-            // 情况1: 连续大写字母不在最后，且前面有字符
+            // 情况 1: 连续大写字母不在最后，且前面有字符
             if consecutive_uppercase > 1 && j < chars.len() && i > 0 {
                 // 将前面的大写字母跟最后一位以下划线分割
                 for k in 0..consecutive_uppercase - 1 {
@@ -33,7 +33,7 @@ fn camel_to_snake_upper(s: &str) -> String {
                 result.push(chars[i + consecutive_uppercase - 1]);
                 i += consecutive_uppercase;
             }
-            // 情况2: 连续大写字母在最后
+            // 情况 2: 连续大写字母在最后
             else if consecutive_uppercase > 1 && j >= chars.len() {
                 // 全部作为整体跟前面的字符以下划线分割
                 if i > 0 {
@@ -44,7 +44,7 @@ fn camel_to_snake_upper(s: &str) -> String {
                 }
                 i += consecutive_uppercase;
             }
-            // 情况3: 单个大写字母
+            // 情况 3: 单个大写字母
             else {
                 if i != 0 {
                     result.push('_');

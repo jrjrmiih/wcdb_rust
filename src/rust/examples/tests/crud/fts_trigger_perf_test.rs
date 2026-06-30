@@ -129,10 +129,10 @@ pub mod fts_trigger_perf_test {
         let avg = results.iter().map(|d| d.as_nanos()).sum::<u128>() / results.len() as u128;
 
         println!("-------------- Benchmark Result --------------");
-        println!("{} 次数: {}", db_name, times);
-        println!("最小耗时: {:?}  (≈ {} µs)", min, min.as_micros());
-        println!("最大耗时: {:?}  (≈ {} µs)", max, max.as_micros());
-        println!("平均耗时: {:?}ns  (≈ {} µs)", avg, avg / 1000);
+        println!("{} 次数：{}", db_name, times);
+        println!("最小耗时：{:?}  (≈ {} µs)", min, min.as_micros());
+        println!("最大耗时：{:?}  (≈ {} µs)", max, max.as_micros());
+        println!("平均耗时：{:?}ns  (≈ {} µs)", avg, avg / 1000);
     }
 
     fn trigger_rebuild_by_batch(db: &Database) {
