@@ -137,6 +137,18 @@ fn config_cmake(target: &str) -> PathBuf {
         .define("CMAKE_BUILD_TYPE", "Release")
         .define("BUILD_FROM_CARGO", "ON");
 
+    // 体积优化：将 Release 默认的 -O3（速度优先）覆盖为 -Os（体积优先），
+    // 缩小 WCDB/sqlcipher/zstd/openssl 编入最终 .so 的代码段。
+    // 仅改优化级别——NDK/工具链注入的 -g 调试信息保留，C++ 崩溃栈仍可符号反解
+    //（调试信息在发布期被 strip，不计入出包体积，只进离线符号归档）。
+    // 注意：-Os 是 clang/gcc 标志，MSVC(cl.exe) 不认，故排除 windows-msvc。
+    let is_msvc = target.contains("windows") && target.contains("msvc");
+    if !is_msvc {
+        cmake
+            .define("CMAKE_CXX_FLAGS_RELEASE", "-Os -DNDEBUG")
+            .define("CMAKE_C_FLAGS_RELEASE", "-Os -DNDEBUG");
+    }
+
     if target.contains("windows") {
         cmake.build_target("ALL_BUILD");
     } else {
